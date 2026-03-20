@@ -1,62 +1,53 @@
-# ⚡ StreamVault
+# StreamVault
 
-> A production-quality, YouTube-style video platform built with React, Node.js, Express, and MySQL.  
-> Premium **Obsidian Dark** UI — glassmorphism, Framer Motion animations, Syne typography.
+A full-stack video sharing platform built with React, Node.js, and MySQL. Upload, watch, comment, and subscribe — all in a clean dark UI.
 
----
-
-## 📸 Feature Overview
-
-| Feature | Details |
-|---|---|
-| 🔐 Auth | JWT register/login, bcrypt passwords, protected routes |
-| 🎬 Upload | Drag-and-drop video + thumbnail, real-time progress bar |
-| 📺 Watch | HTML5 video player, like/dislike, share, suggested videos |
-| 💬 Comments | Live add/delete comments per video |
-| 🔔 Subscriptions | Subscribe/unsubscribe, subscription feed |
-| 🔍 Search | Full-text search by title, description, channel name |
-| 📊 Dashboard | Creator stats (views/likes/comments), video management |
-| 👤 Channels | Public channel pages with subscriber count |
-| 📱 Responsive | Mobile-first, collapsible sidebar |
+Live demo users are seeded with `node seed.js` (password: `Password1`).
 
 ---
 
-## 🛠 Tech Stack
+## What it does
 
-```
-Frontend          Backend           Database
-─────────         ─────────         ─────────
-React 18          Node.js           MySQL 8.0
-Vite              Express.js        Sequelize ORM
-TailwindCSS       JWT Auth
-Framer Motion     Multer uploads
-Axios             bcryptjs
-React Router 6    uuid
-```
+- Register and log in with JWT authentication
+- Upload videos with thumbnails and tags
+- Watch videos with an HTML5 player
+- Like, dislike, and comment on videos
+- Subscribe to channels and get a personalized feed
+- Search by title, description, or channel name
+- Manage your uploads from a creator dashboard
 
 ---
 
-## 🚀 Quick Start
+## Tech
 
-### 1. Prerequisites
+**Frontend** — React 18, Vite, TailwindCSS, Framer Motion, Axios, React Router 6
 
-- Node.js 18+
-- MySQL 8.0+
-- npm 9+
+**Backend** — Node.js, Express, Sequelize ORM, Multer, bcryptjs, JWT
 
-### 2. Database Setup
+**Database** — MySQL 8.0
 
-```sql
-CREATE DATABASE streamvault CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
+---
 
-Or run the full schema:
+## Getting started
+
+You need Node.js 18+, MySQL 8.0+, and npm installed.
+
+### 1. Clone the repo
 
 ```bash
-mysql -u root -p < schema.sql
+git clone https://github.com/ayusht28/streamvault.git
+cd streamvault
 ```
 
-### 3. Backend
+### 2. Create the database
+
+Open MySQL and run:
+
+```sql
+CREATE DATABASE streamvault;
+```
+
+### 3. Set up the backend
 
 ```bash
 cd backend
@@ -64,7 +55,7 @@ npm install
 cp .env.example .env
 ```
 
-Edit `.env`:
+Open `.env` and fill in your MySQL credentials and a JWT secret:
 
 ```env
 PORT=5000
@@ -72,206 +63,138 @@ DB_HOST=localhost
 DB_PORT=3306
 DB_NAME=streamvault
 DB_USER=root
-DB_PASSWORD=yourpassword
-JWT_SECRET=change_this_to_a_long_random_string
+DB_PASSWORD=your_mysql_password
+JWT_SECRET=your_long_random_secret_here
 JWT_EXPIRES_IN=7d
 NODE_ENV=development
 FRONTEND_URL=http://localhost:5173
 ```
 
+Start the backend:
+
 ```bash
-npm run dev    # starts on :5000 and auto-syncs MySQL tables
+npm run dev
 ```
 
-### 4. Frontend
+You should see `Database connected` and `Database synced` in the terminal. All tables are created automatically.
+
+### 4. Set up the frontend
+
+Open a second terminal:
 
 ```bash
 cd frontend
 npm install
-npm run dev    # starts on :5173
+npm run dev
 ```
 
-### 5. All-in-one (from root)
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+### 5. Seed demo data (optional)
 
 ```bash
-npm install         # installs concurrently
-npm run install:all # installs both backend + frontend
-npm run dev         # runs both simultaneously
+cd backend
+node seed.js
 ```
 
-Open **http://localhost:5173** 🎉
+This creates 5 users, 20 videos, comments, likes, and subscriptions. All demo accounts use `Password1` as the password.
+
+| Email                 | Password  |
+| --------------------- | --------- |
+| alex@streamvault.io   | Password1 |
+| jordan@streamvault.io | Password1 |
+| miles@streamvault.io  | Password1 |
+| sarah@streamvault.io  | Password1 |
+| demo@streamvault.io   | Password1 |
 
 ---
 
-## 📁 Project Structure
+## Project structure
 
 ```
 streamvault/
-├── schema.sql                    # Raw MySQL DDL
-├── package.json                  # Root (concurrently runner)
-│
 ├── backend/
-│   ├── server.js                 # Express app entry
-│   ├── .env.example
-│   ├── config/
-│   │   └── database.js           # Sequelize pool config
-│   ├── models/
-│   │   ├── index.js              # Associations
-│   │   ├── User.js
-│   │   ├── Video.js
-│   │   └── associations.js       # Comment, Like, Subscription
-│   ├── controllers/
-│   │   ├── authController.js
-│   │   ├── videoController.js
-│   │   ├── commentController.js
-│   │   └── subscriptionController.js
-│   ├── middleware/
-│   │   ├── auth.js               # JWT authenticate + optionalAuth
-│   │   └── upload.js             # Multer video/thumbnail/avatar
-│   ├── routes/
-│   │   ├── auth.js
-│   │   ├── videos.js
-│   │   └── index.js              # comments + subscriptions
-│   └── uploads/
-│       ├── videos/
-│       ├── thumbnails/
-│       └── avatars/
+│   ├── config/          # Sequelize database config
+│   ├── controllers/     # Route logic (auth, videos, comments, subscriptions)
+│   ├── middleware/       # JWT auth, Multer file uploads
+│   ├── models/          # Sequelize models and associations
+│   ├── routes/          # Express route definitions
+│   ├── uploads/         # Local file storage (videos, thumbnails, avatars)
+│   ├── seed.js          # Demo data seeder
+│   └── server.js        # App entry point
 │
-└── frontend/
-    ├── index.html
-    ├── vite.config.js
-    ├── tailwind.config.js
-    └── src/
-        ├── App.jsx               # Router setup
-        ├── main.jsx
-        ├── index.css             # Design tokens, glass, shimmer
-        ├── context/
-        │   └── AuthContext.jsx
-        ├── services/
-        │   └── api.js            # Axios + videoAPI/commentAPI/etc
-        ├── utils/
-        │   └── helpers.js        # formatViews, timeAgo, etc
-        ├── layouts/
-        │   └── MainLayout.jsx
-        ├── components/
-        │   ├── Navbar.jsx
-        │   ├── Sidebar.jsx
-        │   ├── VideoCard.jsx     # + VideoCardSkeleton
-        │   ├── VideoGrid.jsx
-        │   └── CommentSection.jsx
-        └── pages/
-            ├── HomePage.jsx
-            ├── WatchPage.jsx
-            ├── UploadPage.jsx
-            ├── DashboardPage.jsx
-            ├── SearchPage.jsx
-            ├── ChannelPage.jsx
-            ├── SubscriptionsPage.jsx
-            ├── LoginPage.jsx
-            ├── RegisterPage.jsx
-            └── NotFoundPage.jsx
+├── frontend/
+│   └── src/
+│       ├── components/  # Navbar, Sidebar, VideoCard, CommentSection
+│       ├── context/     # Auth context (global login state)
+│       ├── hooks/       # useToast
+│       ├── layouts/     # MainLayout (Navbar + Sidebar wrapper)
+│       ├── pages/       # All page components
+│       ├── services/    # Axios API calls
+│       └── utils/       # Helper functions (formatViews, timeAgo, etc.)
+│
+├── schema.sql           # Raw MySQL table definitions
+└── README.md
 ```
 
 ---
 
-## 🌐 API Reference
+## API endpoints
 
 ### Auth
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| POST | `/api/auth/register` | ❌ | Register new user |
-| POST | `/api/auth/login` | ❌ | Login, returns JWT |
-| GET | `/api/auth/me` | ✅ | Get current user |
-| PUT | `/api/auth/profile` | ✅ | Update profile/avatar |
-| GET | `/api/auth/channel/:userId` | ❌ | Get public channel |
+
+| Method | Endpoint                    | Protected | Description              |
+| ------ | --------------------------- | --------- | ------------------------ |
+| POST   | `/api/auth/register`        | No        | Create account           |
+| POST   | `/api/auth/login`           | No        | Login, returns JWT       |
+| GET    | `/api/auth/me`              | Yes       | Get logged in user       |
+| PUT    | `/api/auth/profile`         | Yes       | Update profile or avatar |
+| GET    | `/api/auth/channel/:userId` | No        | Get public channel info  |
 
 ### Videos
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/api/videos` | ❌ | Feed (`?sort=latest|trending|popular&page=1`) |
-| GET | `/api/videos/search` | ❌ | Search (`?q=term`) |
-| GET | `/api/videos/my` | ✅ | My uploaded videos |
-| GET | `/api/videos/user/:userId` | ❌ | User's videos |
-| GET | `/api/videos/:id` | Optional | Single video + suggested |
-| POST | `/api/videos/upload` | ✅ | Upload (multipart: video + thumbnail) |
-| PUT | `/api/videos/:id` | ✅ | Update title/description |
-| DELETE | `/api/videos/:id` | ✅ | Delete video |
-| POST | `/api/videos/:id/like` | ✅ | Toggle like/dislike |
+
+| Method | Endpoint                | Protected | Description                |
+| ------ | ----------------------- | --------- | -------------------------- |
+| GET    | `/api/videos`           | No        | Homepage feed              |
+| GET    | `/api/videos/search?q=` | No        | Search videos              |
+| GET    | `/api/videos/:id`       | No        | Single video + suggestions |
+| GET    | `/api/videos/my`        | Yes       | Your uploaded videos       |
+| POST   | `/api/videos/upload`    | Yes       | Upload video + thumbnail   |
+| PUT    | `/api/videos/:id`       | Yes       | Edit title or description  |
+| DELETE | `/api/videos/:id`       | Yes       | Delete your video          |
+| POST   | `/api/videos/:id/like`  | Yes       | Like or dislike            |
 
 ### Comments
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/api/comments/:videoId` | ❌ | List comments |
-| POST | `/api/comments/:videoId` | ✅ | Add comment |
-| DELETE | `/api/comments/:id` | ✅ | Delete own comment |
+
+| Method | Endpoint                 | Protected | Description              |
+| ------ | ------------------------ | --------- | ------------------------ |
+| GET    | `/api/comments/:videoId` | No        | Get comments for a video |
+| POST   | `/api/comments/:videoId` | Yes       | Add a comment            |
+| DELETE | `/api/comments/:id`      | Yes       | Delete your comment      |
 
 ### Subscriptions
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/api/subscriptions` | ✅ | My subscriptions |
-| GET | `/api/subscriptions/feed` | ✅ | Videos from subscribed channels |
-| GET | `/api/subscriptions/status/:channelId` | ✅ | Check if subscribed |
-| POST | `/api/subscriptions/:channelId` | ✅ | Toggle subscribe |
+
+| Method | Endpoint                               | Protected | Description                     |
+| ------ | -------------------------------------- | --------- | ------------------------------- |
+| GET    | `/api/subscriptions`                   | Yes       | Your subscriptions              |
+| GET    | `/api/subscriptions/feed`              | Yes       | Videos from subscribed channels |
+| GET    | `/api/subscriptions/status/:channelId` | Yes       | Check subscription status       |
+| POST   | `/api/subscriptions/:channelId`        | Yes       | Subscribe or unsubscribe        |
 
 ---
 
-## 🎨 Design System
+## Notes
 
-**Palette**
-- Background: `#03040a` → `#080c18` → `#0d1225`
-- Accent: `#8b5cf6` (Violet) / `#6366f1` (Electric Indigo)
-- Aurora: `#22d3ee` (Cyan)
-- Text: `#f1f5f9` / `#94a3b8` / `#475569`
+**Passwords** are hashed with bcrypt. There is no way to recover a plain text password — only reset it.
 
-**Typography**
-- Display: **Syne** (headings, labels)
-- Body: **DM Sans** (paragraphs, UI text)
-- Mono: **JetBrains Mono** (code, badges)
+**Uploaded files** are stored locally in `backend/uploads/`. For production, swap Multer disk storage for an S3 bucket using `multer-s3`.
 
-**Key effects**
-- Glassmorphism: `backdrop-filter: blur(20px)` + semi-transparent borders
-- Shimmer skeletons: CSS `background-size: 200%` gradient animation
-- Card hovers: `scale(1.04)` thumbnail + shadow elevation
-- Gradient text: `linear-gradient(135deg, violet → indigo → cyan)` with `background-clip: text`
+**The `.env` file** must never be committed to Git. It is already in `.gitignore`.
+
+**Tables** are created automatically when the backend starts using `sequelize.sync()`. You do not need to run `schema.sql` manually unless you prefer to set up the tables yourself.
 
 ---
 
-## ☁️ Production Deployment
+## License
 
-### Upgrade storage to AWS S3
-
-In `middleware/upload.js`, swap `multer.diskStorage` for `multer-s3`:
-
-```js
-import multerS3 from 'multer-s3'
-import { S3Client } from '@aws-sdk/client-s3'
-
-const s3 = new S3Client({ region: process.env.AWS_REGION })
-
-storage: multerS3({
-  s3,
-  bucket: process.env.S3_BUCKET,
-  key: (req, file, cb) => cb(null, `videos/${Date.now()}-${file.originalname}`)
-})
-```
-
-### Environment Variables (production)
-
-```env
-NODE_ENV=production
-DB_PASSWORD=<strong_password>
-JWT_SECRET=<64_char_random_string>
-FRONTEND_URL=https://yourdomain.com
-```
-
-### Use migrations instead of `sync({ alter: true })`
-
-```bash
-npx sequelize-cli db:migrate
-```
-
----
-
-## 📝 License
-
-MIT — build freely, ship boldly.
+MIT
