@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+
+# Environment variables - NEVER upload these
+.env
+.env.local
+.env.production
+
+# Upload folders - videos can be huge
+backend/uploads/videos/*
+backend/uploads/thumbnails/*
+backend/uploads/avatars/*
+!backend/uploads/videos/.gitkeep
+!backend/uploads/thumbnails/.gitkeep
+!backend/uploads/avatars/.gitkeep
+
+# Build output
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+logs/
